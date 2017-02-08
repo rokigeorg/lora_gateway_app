@@ -1,6 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
+import time
+from os import system
+import subprocess
 
 app = Flask(__name__)
+# Global variables
+process_id = 0
 
 
 def log_the_user_in(_name):
@@ -37,10 +42,33 @@ def startgui():
     if request.method == 'POST':
         if valid_Gateway_Parameter(request.form["frequency"], request.form["sf"], request.form["coderate"],
                                    request.form["bandwidth"]):
+            gt_para = {"freq": request.form["frequency"], "sf": request.form["sf"], "cr": request.form["coderate"],
+                       "bw": request.form["bandwidth"]}
+
             # start gate
-            return "Done..."
+            if buildGtw():
+                return render_template('runningGUI.html', gt_para=gt_para)
+            else:
+                return render_template('startGUI.html')
     else:
-        return render_template('startGUI.html', )
+        return render_template('startGUI.html')
+
+
+def buildGtw():
+    # excecute Makefile to build the gateway
+
+    output = system("cd gateway-software && pwd")  # stderr=subprocess.STDOUT)
+    print(output)
+
+    procs = []
+    cmd = ["make", "run"]
+    try:
+        procs.append(subprocess.Popen(cmd, shell=True))  # Run program in another process
+        print("Process-ID: ", procs[0])
+        return True
+    except subprocess.CalledProcessError as e:
+        print("Calledprocerr")
+        return False
 
 
 def valid_Gateway_Parameter(freq, sf, cr, bw):
@@ -64,7 +92,6 @@ def check_freq(_freq):
 
 
 def check_sf(_sf):
-    print ("in SF")
     if _sf == "SF7":
         return True
     elif _sf == "SF8":

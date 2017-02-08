@@ -52,6 +52,13 @@ input{
     height:6%;
 }
 
+.showParaBox{
+    width: 100%;
+    background: lightgray;
+    padding: 1%;
+    font-size: large;
+}
+
 footer{
     background-color: darkolivegreen;
     position: absolute;
