@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>low-cost Gateway</title>
+
+    <link rel="stylesheet" href="static/style.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<body>
+
+<div class="wrapper">
+
+    <header>
+
+        <h1>
+            LoRa Low-Cost Gateway
+        </h1>
+    </header>
+
+    <div>
+
+        <div class="infobox">
+            <form action="" id="gatewayStartForm" method="post">
+
+                <h4>LoRa Parameter</h4>
+
+
+                <input type="submit" form="gatewayStartForm" value="Stop Gateway" class="ipt_submit">
+            </form>
+
+
+            <div class="runInfoWrap">
+                <h4>Status</h4>
+                <label>Gateway:</label>
+                <div id="gt_status"></div>
+                <label>Frequency:</label>
+                <div id="gt_fq">{{ freq }} Hz</div>
+                <label>Spreading Factor:</label>
+                <div id="gt_sf">{{ sf }}</div>
+                <label>Code Rate:</label>
+                <div id="gt_cr">{{ cr }}</div>
+                <label>Bandwidth:</label>
+                <div id="gt_bw">{{ bw }}</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <h3>
+        Labp Leipzig | LoRa Low-Cost Gateway
+    </h3>
+</footer>
+
+
+<script>
+
+    var formTag = document.getElementById("gatewayStartForm");
+
+    if(formTag[0].checkValidity() === false){ alert('Validation of parameters. Failed' +
+            ' Please enter correct parameters!');
+    }
+</script>
+
+</body>
+</html>

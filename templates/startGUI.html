@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>low-cost Gateway</title>
+
+    <link rel="stylesheet" href="static/style.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<body>
+
+<div class="wrapper">
+
+    <header>
+
+        <h1>
+            LoRa Low-Cost Gateway
+        </h1>
+    </header>
+
+    <div>
+
+        <div class="infobox">
+            <form action="" id="gatewayStartForm" method="post">
+
+                <h4>LoRa Parameter</h4>
+
+                <label for="ipt_fq">Frequency</label>
+
+                <input type="text" id="ipt_fq" name="frequency" list="ipt_fqs" value="868100000"
+                /><br/>
+
+                    <datalist id="ipt_fqs">
+                        <option value="868100000">
+                    </datalist>
+
+
+                <label for="ipt_sf">Spreading Factor</label>
+                <input type="text" id="ipt_sf" name="sf" list="ipt_sfs"
+                /><br/>
+
+                    <datalist id="ipt_sfs">
+                        <option value="SF7">
+                        <option value="SF8">
+                        <option value="SF9">
+                        <option value="SF10">
+                        <option value="SF11">
+                        <option value="SF12">
+                    </datalist>
+
+                <label for="ipt_cr">Code Rate</label>
+                <input type="text" id="ipt_cr" name="coderate" list="ipt_crs"
+                /><br/>
+                <datalist id="ipt_crs">
+                    <option value="4/5">
+                    <option value="4/6">
+                    <option value="4/7">
+                    <option value="4/8">
+                </datalist>
+
+                <label for="ipt_bw">Bandwidth</label>
+
+                <input type="text" id="ipt_bw" name="bandwidth" list="ipt_bws"
+                /><br/>
+                <datalist id="ipt_bws">
+                    <option value="125">
+                    <option value="250">
+                    <option value="500">
+                </datalist>
+
+                <input type="submit" form="gatewayStartForm" value="Start Gateway" class="ipt_submit">
+            </form>
+
+
+            <div class="runInfoWrap">
+                <h4>Status</h4>
+                <label>Gateway:</label>
+                <div id="gt_status"></div>
+                <label>Frequency:</label>
+                <div id="gt_fq"></div>
+                <label>Spreading Factor:</label>
+                <div id="gt_sf"></div>
+                <label>Code Rate:</label>
+                <div id="gt_cr"></div>
+                <label>Bandwidth:</label>
+                <div id="gt_bw"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <h3>
+        Labp Leipzig | LoRa Low-Cost Gateway
+    </h3>
+</footer>
+
+
+<script>
+
+    var formTag = document.getElementById("gatewayStartForm");
+
+    if(formTag[0].checkValidity() === false){ alert('Validation of parameters. Failed' +
+            ' Please enter correct parameters!');
+    }
+</script>
+
+</body>
+</html>
