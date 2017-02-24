@@ -32,23 +32,23 @@
                 <input type="text" id="ipt_fq" name="frequency" list="ipt_fqs" value="868100000"
                 /><br/>
 
-                    <datalist id="ipt_fqs">
-                        <option value="868100000">
-                    </datalist>
+                <datalist id="ipt_fqs">
+                    <option value="868100000">
+                </datalist>
 
 
                 <label for="ipt_sf">Spreading Factor</label>
                 <input type="text" id="ipt_sf" name="sf" list="ipt_sfs"
                 /><br/>
 
-                    <datalist id="ipt_sfs">
-                        <option value="SF7">
-                        <option value="SF8">
-                        <option value="SF9">
-                        <option value="SF10">
-                        <option value="SF11">
-                        <option value="SF12">
-                    </datalist>
+                <datalist id="ipt_sfs">
+                    <option value="SF7">
+                    <option value="SF8">
+                    <option value="SF9">
+                    <option value="SF10">
+                    <option value="SF11">
+                    <option value="SF12">
+                </datalist>
 
                 <label for="ipt_cr">Code Rate</label>
                 <input type="text" id="ipt_cr" name="coderate" list="ipt_crs"
@@ -69,6 +69,12 @@
                     <option value="250">
                     <option value="500">
                 </datalist>
+
+                <label for="ipt_bw">Output File Name</label>
+
+                <input type="text" id="ipt_output_file" name="outputfile" value="received_data.txt"
+                /><br/>
+
 
                 <input type="submit" form="gatewayStartForm" value="Start Gateway" class="ipt_submit">
             </form>
@@ -103,7 +109,8 @@
 
     var formTag = document.getElementById("gatewayStartForm");
 
-    if(formTag[0].checkValidity() === false){ alert('Validation of parameters. Failed' +
+    if (formTag[0].checkValidity() === false) {
+        alert('Validation of parameters. Failed' +
             ' Please enter correct parameters!');
     }
 </script>
