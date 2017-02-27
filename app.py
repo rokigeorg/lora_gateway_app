@@ -1,12 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import time
-from os import system
+import os
 import subprocess
 import shlex
 
 app = Flask(__name__)
-# Global variables
-process_id = 0
+app.secret_key = 'F12Zr47j\3yX R~X@H!jmM]Lwf/,?KT'
 
 
 def log_the_user_in(_name):
@@ -52,7 +51,7 @@ def startgui():
             print(gt_para["ofn"])
 
             # start gate
-            if buildGtw():
+            if getCurrentPath():
                 return redirect(url_for('runningGUI', freq=request.form["frequency"], sf=request.form["sf"], cr=request.form["coderate"], bw=request.form["bandwidth"], ofn=gt_para["ofn"]))
                 #return render_template('runningGUI.html', gt_para=gt_para)
             else:
@@ -71,32 +70,49 @@ def runningGUI():
                }
 
     print(gt_para["freq"])
-    print(gt_para["sf"][-1])
+    print(gt_para["sf"][-2:])
     print (gt_para["cr"][-1])
     print (gt_para["bw"])
     print (gt_para["ofn"])
 
     # start the gateway with the given parameter
+    # inside the gt_app_obj lives the Gateway programm it will start a
     if startGatewayApp(gt_para):
         return render_template('runningGUI.html', gt_para=gt_para)
+
     else:
-        return "Fuck" #redirect(url_for('startgui'))
+        return redirect(url_for('startgui'))
 
 
 def startGatewayApp(gt_para):
+    current_paths = os.getcwd()
+    path_to_gtapp = current_paths + "/gateway-software/main"
+    print(path_to_gtapp)
 
     procs = []
-    #cmd = ["sudo ", "./main", "-f", gt_para["freq"], "-sf", gt_para["sf"][-1], "-cr", gt_para["cr"][-1], "-bw", gt_para["bw"], "-o", gt_para["ofn"]]
-    #cmd = "sudo ./main -f 868100000 -sf 7 -cr 5 -bw 500 -o received_data.txt"
-    cmd = ["make", " run"]
+    #cmd = "sudo /home/pi/Workspace/Python3_WebApps/testWebserver/gateway-software/main -f 868100000 -sf 12 -cr 5 -bw 500 -o received_data.txt"
+    cmd = "sudo " +  path_to_gtapp +" -f " + gt_para["freq"]+ " -sf " + get_sf_value(gt_para["sf"]) + " -cr " + gt_para["cr"][-1]+ " -bw " + gt_para["bw"] +" -o " +gt_para["ofn"]
+    #cmd = ["sudo", path_to_gtapp, "-f", gt_para["freq"], "-sf", get_sf_value(gt_para["sf"]), "-cr", gt_para["cr"][-1], "-bw", gt_para["bw"], "-o", gt_para["ofn"]]
     print (cmd)
     try:
-        subprocess.call(cmd, shell=True)
-        #procs.append(subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE))  # Run program in another process
-        # procs[0].communicate()
-        # procs[0] = subprocess.Popen(["./main"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        #print("Process-ID: ", procs[0])
+        #b = os.popen(cmd,mode="r")
+        procs.append(subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True))  # Run program in another process
+
+        print("Process-Object: ", procs[0])
+        print("Process-Pid: ", procs[0].pid)
+        print("Process-Args: ", procs[0].args)
+
+        #sudo_prompt = procs[0].communicate(sudo_password + '\n')[1]
+        #output, error = procs[0].communicate()
+
+        #procs[0].terminat()
+        #print(b.read())
+
+        print(procs[0].poll())
+
+        #session['procs'] = procs
+
         return True
     except subprocess.CalledProcessError as e:
         print("Calledprocerr")
@@ -104,27 +120,8 @@ def startGatewayApp(gt_para):
         return False
 
 
-def buildGtw():
-    # excecute Makefile to build the gateway
-
-    output = system("cd gateway-software && pwd")  # stderr=subprocess.STDOUT)
-    print(output)
-
+def getCurrentPath():
     return True
-#    procs = []
- #   cmd = ["sudo", "./main", "-f", "868100000", "-sf", "12", "-cr", "5", "-bw", "500"]
-    #cmd = ["make", "comprun"]
-  #  try:
-   #     procs.append(subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE))  # Run program in another process
-        #procs[0].communicate()
-        #procs[0] = subprocess.Popen(["./main"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        #run_command(cmd)
-
-    #    print("Process-ID: ", procs[0])
-     #   return True
-    #except subprocess.CalledProcessError as e:
-     #   print("Calledprocerr")
-      #  return False
 
 
 def valid_gateway_parameter(freq, sf, cr, bw, ofn):
@@ -194,6 +191,13 @@ def check_ofn(_ofn):
         return False
     else:
         return True
+
+
+def get_sf_value(_sfVa):
+    if len(_sfVa) > 3:
+        return _sfVa[-2:]
+    else:
+        return _sfVa[-1]
 
 
 if __name__ == '__main__':
