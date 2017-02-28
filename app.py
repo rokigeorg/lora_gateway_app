@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import time
 import os
 import subprocess
@@ -6,6 +6,8 @@ import shlex
 
 app = Flask(__name__)
 app.secret_key = 'F12Zr47j\3yX R~X@H!jmM]Lwf/,?KT'
+app.cache = {}
+
 
 
 def log_the_user_in(_name):
@@ -16,11 +18,6 @@ def valid_login(_usern, _pword):
     print(_usern, _pword)
     if _usern == "georg":
         return True
-
-
-# @app.route('/', methods=['POST', 'GET'])
-# def index():
-#    return render_template('index.html')
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -62,18 +59,28 @@ def startgui():
 
 @app.route('/runningGUI',  methods=['POST', 'GET'])
 def runningGUI():
+
+    # check if STOP Btn is pressed
+    if request.method == 'POST':
+        stop_gt = request.form["stop_radio"]
+
+        if stop_gt:
+            #get cache for childprocess obj and kill process
+
+            procs = app.cache.pop("subproc")
+
+            print(procs[0].pid)
+            #kill process
+            procs[0].kill()
+
+            return redirect(url_for('startgui'))
+
     gt_para = {"freq": request.args["freq"],
                "sf": request.args["sf"],
                "cr": request.args["cr"],
                "bw": request.args["bw"],
                "ofn": request.args["ofn"]
                }
-
-    print(gt_para["freq"])
-    print(gt_para["sf"][-2:])
-    print (gt_para["cr"][-1])
-    print (gt_para["bw"])
-    print (gt_para["ofn"])
 
     # start the gateway with the given parameter
     # inside the gt_app_obj lives the Gateway programm it will start a
@@ -90,28 +97,23 @@ def startGatewayApp(gt_para):
     print(path_to_gtapp)
 
     procs = []
+
     #cmd = "sudo /home/pi/Workspace/Python3_WebApps/testWebserver/gateway-software/main -f 868100000 -sf 12 -cr 5 -bw 500 -o received_data.txt"
+
     cmd = "sudo " +  path_to_gtapp +" -f " + gt_para["freq"]+ " -sf " + get_sf_value(gt_para["sf"]) + " -cr " + gt_para["cr"][-1]+ " -bw " + gt_para["bw"] +" -o " +gt_para["ofn"]
+
     #cmd = ["sudo", path_to_gtapp, "-f", gt_para["freq"], "-sf", get_sf_value(gt_para["sf"]), "-cr", gt_para["cr"][-1], "-bw", gt_para["bw"], "-o", gt_para["ofn"]]
     print (cmd)
     try:
-
-        #b = os.popen(cmd,mode="r")
         procs.append(subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True))  # Run program in another process
 
-        print("Process-Object: ", procs[0])
-        print("Process-Pid: ", procs[0].pid)
-        print("Process-Args: ", procs[0].args)
+        # store the process obj in the global app obj
+        #session["subproc_arr"] = jsonify({"procs":procs})
+        app.cache = {"subproc":procs}
 
-        #sudo_prompt = procs[0].communicate(sudo_password + '\n')[1]
-        #output, error = procs[0].communicate()
-
-        #procs[0].terminat()
-        #print(b.read())
+        #check all process obj
 
         print(procs[0].poll())
-
-        #session['procs'] = procs
 
         return True
     except subprocess.CalledProcessError as e:
@@ -201,4 +203,4 @@ def get_sf_value(_sfVa):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=False, host='0.0.0.0')
