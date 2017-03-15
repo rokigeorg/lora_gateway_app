@@ -9,7 +9,6 @@ app.secret_key = 'F12Zr47j\3yX R~X@H!jmM]Lwf/,?KT'
 app.cache = {}
 
 
-
 def log_the_user_in(_name):
     return redirect(url_for('startgui'))
 
