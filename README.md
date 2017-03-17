@@ -1,8 +1,7 @@
 
 <snippet>
   <content>
-# LoRa Communication
-## App
+# LoRa Communication App
 
 This repository includes a Flasks Web-App to control a LoRa Gateway Software for the Raspberry Pi Model B.
 On the Webpage it is possible to adjust the parameters for the Gateway.
