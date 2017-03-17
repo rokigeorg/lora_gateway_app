@@ -15,7 +15,7 @@ def log_the_user_in(_name):
 
 def valid_login(_usern, _pword):
     print(_usern, _pword)
-    if _usern == "georg":
+    if _usern == "admin":
         return True
 
 
